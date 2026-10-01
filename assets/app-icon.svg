@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">小小识字乐园</title>
+  <desc id="description">暖黄色圆环中的绿色识字图标</desc>
+  <rect width="512" height="512" rx="112" fill="#fff9ef"/>
+  <circle cx="256" cy="256" r="198" fill="#f5ca63"/>
+  <circle cx="256" cy="256" r="148" fill="#6db59d"/>
+  <path d="M247 154h18v204h-18zM199 245l18 6-36 108-18-6zM295 251l18-6 36 108-18 6z" fill="#fffdf8"/>
+</svg>

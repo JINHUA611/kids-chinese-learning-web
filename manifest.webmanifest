@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "小小识字乐园",
+  "short_name": "小小识字",
+  "description": "适合小朋友在平板上使用的离线中文识字工具",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fffdf8",
+  "theme_color": "#fff9ef",
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

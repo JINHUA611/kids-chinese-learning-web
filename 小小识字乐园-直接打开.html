@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff9ef" />
+    <meta name="description" content="适合小朋友在平板上使用的离线中文识字工具" />
+    <title>小小识字乐园 · 离线版</title>
+    <style>:root {
+  color-scheme: light;
+  --ink: #2e403b;
+  --muted: #77847e;
+  --paper: #fffdf8;
+  --cream: #fff7e8;
+  --green: #6db59d;
+  --green-dark: #3f806d;
+  --line: rgba(67, 92, 83, .12);
+  font-family: "Noto Sans SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  background: #f7f2e9;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(circle at 8% 4%, #fff 0 5%, transparent 16%), #f7f2e9; }
+button { font: inherit; color: inherit; touch-action: manipulation; }
+button:focus-visible { outline: 4px solid rgba(70, 134, 113, .25); outline-offset: 3px; }
+.app-shell { width: min(1180px, 100%); min-height: 100vh; margin: auto; background: var(--paper); box-shadow: 0 0 60px rgba(69, 61, 44, .08); }
+.topbar { height: 88px; padding: 0 clamp(24px, 5vw, 64px); display: flex; align-items: center; gap: 18px; border-bottom: 1px solid var(--line); }
+.brand-mark { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 17px 13px 18px 12px; background: #f5ca63; color: #775b20; font-size: 28px; font-weight: 900; transform: rotate(-3deg); }
+.topbar-title { flex: 1; font-size: 22px; font-weight: 800; display: flex; flex-direction: column; }
+.topbar-title small { margin-top: 2px; color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: .08em; }
+.sun-doodle { font-size: 28px; color: #e7a934; }
+.icon-button { width: 52px; height: 52px; border: 0; border-radius: 50%; background: #f3eee4; font-size: 30px; cursor: pointer; }
+.topbar-spacer { width: 52px; }
+main { padding: clamp(24px, 4vw, 50px) clamp(22px, 5vw, 64px) 56px; }
+.hero { min-height: 190px; padding: 34px clamp(28px, 5vw, 60px); display: flex; align-items: center; justify-content: space-between; border-radius: 34px; background: #e7f4ec; overflow: hidden; }
+.hero h1, .page-intro h1 { margin: 4px 0 12px; font-size: clamp(32px, 5vw, 52px); letter-spacing: -.04em; }
+.hero p:not(.eyebrow), .page-intro > p:last-child { margin: 0; color: #687b73; font-size: 18px; }
+.eyebrow { margin: 0 0 5px; color: var(--green-dark); font-size: 14px; font-weight: 800; letter-spacing: .12em; }
+.cloud { position: relative; width: 260px; height: 140px; flex: 0 0 auto; }
+.cloud::before { content: ''; position: absolute; inset: 20px 0 0; border-radius: 80px 80px 36px 36px; background: rgba(255,255,255,.72); transform: rotate(2deg); }
+.cloud span { position: absolute; z-index: 1; display: grid; place-items: center; width: 68px; height: 68px; border-radius: 22px; background: #fffaf0; box-shadow: 0 8px 18px rgba(61, 97, 78, .09); font: 800 38px serif; }
+.cloud span:nth-child(1) { left: 22px; top: 46px; transform: rotate(-8deg); }
+.cloud span:nth-child(2) { left: 101px; top: 15px; transform: rotate(4deg); }
+.cloud span:nth-child(3) { right: 14px; top: 57px; transform: rotate(9deg); }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: -22px 30px 36px; position: relative; }
+.stat-card { padding: 21px 24px; border: 5px solid var(--paper); border-radius: 22px; box-shadow: 0 9px 24px rgba(76, 73, 57, .08); }
+.stat-card span { display: block; font-size: 14px; color: #68766f; font-weight: 700; }
+.stat-card strong { font-size: 35px; margin-right: 6px; }
+.stat-card small { color: #68766f; }
+.stat-card.mint { background: #dff2e9; }.stat-card.peach { background: #fbe8dc; }.stat-card.sky { background: #e3f0f4; }
+.section-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+.section-heading h2 { margin: 0; font-size: 25px; }.section-heading span { color: #97a19c; font-size: 14px; }
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.action-card { min-height: 140px; padding: 22px; display: grid; grid-template-columns: 70px 1fr auto; align-items: center; gap: 18px; border: 0; border-radius: 27px; text-align: left; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
+.action-card:active { transform: scale(.985); }
+.action-card.yellow { background: #fff0bf; }.action-card.green { background: #dff1e8; }.action-card.pink { background: #f8e5e1; }.action-card.blue { background: #e1eef3; }
+.action-icon { width: 66px; height: 66px; display: grid; place-items: center; border-radius: 21px; background: rgba(255,255,255,.65); }
+.action-icon svg { width: 39px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.action-copy { display: flex; flex-direction: column; gap: 7px; }.action-copy strong { font-size: 24px; }.action-copy small { font-size: 14px; color: #6f7c76; }
+.action-link { align-self: end; font-size: 13px; font-weight: 700; }.action-link b { font-size: 19px; margin-left: 5px; }
+.recent-card { margin-top: 30px; padding: 24px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border: 1px solid var(--line); border-radius: 25px; }
+.recent-card h2 { margin: 3px 0 0; font-size: 20px; }.recent-chars { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.recent-chars button { width: 54px; height: 54px; border: 0; border-radius: 17px; background: #f7f1e6; font: 700 28px serif; cursor: pointer; }.empty-hint { color: var(--muted); }
+.study-layout { width: min(740px, 100%); margin: auto; }
+.session-meta { display: flex; justify-content: space-between; color: var(--muted); font-weight: 700; }.mode-pill { color: var(--green-dark); }
+.mini-progress { height: 8px; margin: 12px 0 22px; border-radius: 8px; background: #ece9e0; overflow: hidden; }.mini-progress i,.wide-progress i { display: block; height: 100%; border-radius: inherit; background: #75bda5; transition: width .25s; }
+.character-card { min-height: 440px; padding: 27px; display: flex; flex-direction: column; align-items: center; border-radius: 36px; background: #fff9ec; box-shadow: inset 0 0 0 1px rgba(130, 107, 53, .07); }
+.character-card > p { margin: 0; color: var(--muted); font-size: 16px; }.learning-visual { display: flex; align-items: center; justify-content: center; gap: clamp(18px, 4vw, 46px); width: 100%; }.giant-character { margin: 10px 0 -2px; border: 0; background: transparent; font: 700 clamp(150px, 24vw, 215px)/1.15 "KaiTi", "STKaiti", serif; cursor: pointer; }
+.character-image { width: clamp(112px, 18vw, 150px); aspect-ratio: 1; margin: 0; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 32px; background: #e8f3ec; box-shadow: inset 0 0 0 1px rgba(69, 116, 91, .08); }.character-image > span { font-size: clamp(60px, 9vw, 82px); line-height: 1; }.character-image figcaption { margin-top: 8px; color: #658075; font-size: 13px; font-weight: 700; }
+.pinyin { font-size: 28px; color: #b06e4d; font-weight: 700; }.word-chips { display: flex; gap: 14px; margin-top: 20px; }.word-chips button { min-height: 48px; padding: 9px 18px; border: 0; border-radius: 999px; background: #f4ead8; font-size: 19px; cursor: pointer; transition: transform .15s ease, background .15s ease; }.word-chips button span { margin-left: 7px; color: #b06e4d; font-size: 15px; }.word-chips button:active { transform: scale(.94); background: #ead9bd; }
+.speak-hint { margin-top: 18px; color: #a19d91; }.decision-buttons { display: grid; grid-template-columns: 1fr 1.25fr; gap: 18px; margin-top: 22px; }
+.decision { min-height: 94px; display: grid; grid-template-columns: 44px 1fr; grid-template-rows: 1fr 1fr; column-gap: 10px; align-items: end; padding: 17px 24px; border-radius: 24px; cursor: pointer; }
+.decision > span { grid-row: 1 / 3; align-self: center; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; font-size: 25px; }.decision strong { font-size: 22px; }.decision small { align-self: start; opacity: .72; }
+.decision.secondary { border: 2px solid #ddd4c5; background: #fff; }.decision.secondary > span { background: #f2ece3; }.decision.primary { border: 0; background: #70b89f; color: white; box-shadow: 0 9px 20px rgba(67, 128, 107, .2); }.decision.primary > span { background: rgba(255,255,255,.2); }
+.center-message { min-height: 65vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }.center-message h1 { font-size: 38px; margin: 8px; }.center-message > p:not(.eyebrow) { color: var(--muted); font-size: 19px; }.celebrate { width: 100px; height: 100px; display: grid; place-items: center; margin-bottom: 20px; border-radius: 35px; background: #fff0bd; color: #d99d27; font-size: 55px; transform: rotate(-4deg); }
+.big-home-button,.continue-button,.empty-panel button { min-height: 60px; padding: 0 36px; border: 0; border-radius: 19px; background: var(--green); color: white; font-weight: 800; font-size: 18px; cursor: pointer; }
+.page-intro { padding: 10px 0 28px; }.page-intro h1 { font-size: clamp(34px, 5vw, 48px); }.page-intro em { color: #d58c55; font-style: normal; }
+.known-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 17px; }.hanzi-tile { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #eee6da; border-radius: 25px; background: #fffaf0; cursor: pointer; }.hanzi-tile:nth-child(3n+2) { background: #f0f8f3; }.hanzi-tile:nth-child(3n) { background: #f7edef; }.hanzi-tile strong { font: 700 55px serif; }.hanzi-tile small { color: var(--muted); font-size: 15px; }
+.empty-panel { grid-column: 1/-1; min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #e4ded2; border-radius: 30px; }.empty-panel > span { font-size: 50px; }.empty-panel h2 { margin-bottom: 0; }.empty-panel p { color: var(--muted); }
+.detail-card { position: relative; display: flex; align-items: center; gap: 35px; margin-bottom: 25px; padding: 20px 35px; border-radius: 25px; background: #e8f3ec; }.detail-card > strong { font: 700 90px serif; }.detail-card h2 { margin: 0 0 8px; }.detail-card p { margin: 0; font-size: 19px; }.detail-close { position: absolute; right: 16px; top: 12px; border: 0; background: transparent; font-size: 28px; cursor: pointer; }
+.progress-overview { display: flex; align-items: center; gap: clamp(35px, 7vw, 90px); padding: 35px clamp(25px, 6vw, 70px); border-radius: 30px; background: #e9f4ed; }.progress-ring { --progress: 0deg; width: 190px; aspect-ratio: 1; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(#69b297 var(--progress), #d4e5da 0); }.progress-ring::before { content: ''; grid-area: 1/1; width: 150px; aspect-ratio: 1; border-radius: 50%; background: var(--paper); }.progress-ring div { grid-area: 1/1; z-index: 1; display: flex; flex-direction: column; align-items: center; }.progress-ring strong { font-size: 43px; }.progress-ring small { color: var(--muted); }.progress-copy { flex: 1; }.progress-copy h2 { font-size: 28px; margin: 0 0 10px; }.progress-copy p { color: var(--muted); font-size: 17px; }.wide-progress { height: 12px; margin-top: 22px; background: #d4e5da; border-radius: 10px; overflow: hidden; }
+.progress-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }.progress-stat { display: flex; align-items: center; gap: 14px; padding: 22px; border: 1px solid var(--line); border-radius: 22px; }.progress-stat > span { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; font-weight: 900; background: #f4eddf; }.progress-stat div { display: flex; flex-direction: column; }.progress-stat small { color: var(--muted); }.progress-stat strong { font-size: 28px; }.progress-stat strong i { font-size: 13px; font-style: normal; }.progress-stat.check > span { background: #ddf0e7; color: #43836e; }.progress-stat.pencil > span { background: #fbe8dc; color: #b66f4a; }.progress-stat.seed > span { background: #e6eef3; color: #517c92; }
+.continue-button { display: block; margin: 28px auto 0; }.continue-button span { margin-left: 18px; }
+
+@media (max-width: 720px) {
+  .topbar { height: 76px; padding-inline: 20px; }.topbar-title { font-size: 19px; }main { padding: 20px 17px 40px; }
+  .hero { min-height: 180px; padding: 28px 24px; }.hero h1 { font-size: 34px; }.cloud { width: 125px; transform: scale(.75); transform-origin: right center; margin-left: -20px; }
+  .stats-row { gap: 8px; margin: -15px 10px 28px; }.stat-card { padding: 16px 12px; border-width: 3px; }.stat-card strong { font-size: 29px; }.stat-card small { font-size: 11px; }
+  .action-grid { grid-template-columns: 1fr; gap: 13px; }.action-card { min-height: 112px; grid-template-columns: 60px 1fr auto; padding: 17px; }.action-icon { width: 58px; height: 58px; }.action-copy strong { font-size: 21px; }
+  .recent-card { align-items: flex-start; flex-direction: column; }.recent-chars { justify-content: flex-start; }
+  .character-card { min-height: 390px; }.learning-visual { gap: 10px; }.character-image { width: 104px; border-radius: 25px; }.character-image > span { font-size: 56px; }.decision-buttons { gap: 10px; }.decision { padding: 14px; grid-template-columns: 38px 1fr; }.decision > span { width: 38px; height: 38px; }.decision strong { font-size: 19px; }.decision small { font-size: 11px; }
+  .known-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }.hanzi-tile { border-radius: 20px; }.hanzi-tile strong { font-size: 46px; }
+  .progress-overview { flex-direction: column; text-align: center; }.progress-ring { width: 170px; }.progress-ring::before { width: 134px; }.progress-stats { grid-template-columns: 1fr 1fr; }.progress-stat { padding: 17px 14px; }
+}
+
+@media (max-width: 430px) {
+  .hero { min-height: 170px; }.hero p:not(.eyebrow) { font-size: 15px; }.cloud { display: none; }.stats-row { margin-inline: 0; }.stat-card span { font-size: 12px; }
+  .section-heading span,.action-link { display: none; }.action-card { grid-template-columns: 58px 1fr; }.learning-visual { flex-direction: column; gap: 0; }.character-image { width: 88px; margin-top: -12px; }.character-image > span { font-size: 46px; }.character-image figcaption { display: none; }.word-chips button { padding: 8px 15px; }.speak-hint { font-size: 11px; }
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  .topbar { height: 68px; }.study-layout { width: min(940px, 100%); }.character-card { min-height: 330px; padding: 15px; }.giant-character { font-size: 145px; margin-block: 0; }.character-image { width: 105px; }.character-image > span { font-size: 58px; }.word-chips { margin-top: 9px; }.speak-hint { margin-top: 9px; }.decision { min-height: 78px; }.decision-buttons { margin-top: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+  </head>
+  <body>
+    <div id="app" aria-live="polite"></div>
+    <noscript>请在浏览器中开启 JavaScript 后使用小小识字乐园。</noscript>
+    <script>/**
+ * 第一阶段正式字库：共 300 个不重复汉字，order 即固定学习顺序。
+ * image 使用本地 Unicode 图形，不依赖网络；旧记录继续以汉字 id 匹配。
+ */
+const characters = [
+  { order: 1, id: '人', char: '人', pinyin: 'rén', words: ['大人', '家人'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“大人”的儿童配图' } },
+  { order: 2, id: '口', char: '口', pinyin: 'kǒu', words: ['小口', '门口'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“小口”的儿童配图' } },
+  { order: 3, id: '手', char: '手', pinyin: 'shǒu', words: ['小手', '双手'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“小手”的儿童配图' } },
+  { order: 4, id: '目', char: '目', pinyin: 'mù', words: ['目光', '耳目'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“目光”的儿童配图' } },
+  { order: 5, id: '耳', char: '耳', pinyin: 'ěr', words: ['耳朵', '木耳'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“耳朵”的儿童配图' } },
+  { order: 6, id: '日', char: '日', pinyin: 'rì', words: ['日光', '日子'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“日光”的儿童配图' } },
+  { order: 7, id: '月', char: '月', pinyin: 'yuè', words: ['月亮', '月光'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“月亮”的儿童配图' } },
+  { order: 8, id: '山', char: '山', pinyin: 'shān', words: ['大山', '上山'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“大山”的儿童配图' } },
+  { order: 9, id: '水', char: '水', pinyin: 'shuǐ', words: ['喝水', '河水'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“喝水”的儿童配图' } },
+  { order: 10, id: '火', char: '火', pinyin: 'huǒ', words: ['大火', '火苗'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“大火”的儿童配图' } },
+  { order: 11, id: '木', char: '木', pinyin: 'mù', words: ['木头', '树木'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“木头”的儿童配图' } },
+  { order: 12, id: '土', char: '土', pinyin: 'tǔ', words: ['土地', '泥土'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“土地”的儿童配图' } },
+  { order: 13, id: '天', char: '天', pinyin: 'tiān', words: ['天空', '白天'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“天空”的儿童配图' } },
+  { order: 14, id: '云', char: '云', pinyin: 'yún', words: ['白云', '云朵'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“白云”的儿童配图' } },
+  { order: 15, id: '雨', char: '雨', pinyin: 'yǔ', words: ['下雨', '雨水'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“下雨”的儿童配图' } },
+  { order: 16, id: '风', char: '风', pinyin: 'fēng', words: ['大风', '风车'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“大风”的儿童配图' } },
+  { order: 17, id: '大', char: '大', pinyin: 'dà', words: ['大人', '大山'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“大人”的儿童配图' } },
+  { order: 18, id: '小', char: '小', pinyin: 'xiǎo', words: ['小手', '小鸟'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“小手”的儿童配图' } },
+  { order: 19, id: '上', char: '上', pinyin: 'shàng', words: ['上面', '上山'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“上面”的儿童配图' } },
+  { order: 20, id: '下', char: '下', pinyin: 'xià', words: ['下面', '下雨'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“下面”的儿童配图' } },
+  { order: 21, id: '中', char: '中', pinyin: 'zhōng', words: ['中间', '中心'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“中间”的儿童配图' } },
+  { order: 22, id: '左', char: '左', pinyin: 'zuǒ', words: ['左手', '左边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“左手”的儿童配图' } },
+  { order: 23, id: '右', char: '右', pinyin: 'yòu', words: ['右手', '右边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“右手”的儿童配图' } },
+  { order: 24, id: '前', char: '前', pinyin: 'qián', words: ['前面', '向前'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“前面”的儿童配图' } },
+  { order: 25, id: '后', char: '后', pinyin: 'hòu', words: ['后面', '身后'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“后面”的儿童配图' } },
+  { order: 26, id: '爸', char: '爸', pinyin: 'bà', words: ['爸爸', '爸妈'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“爸爸”的儿童配图' } },
+  { order: 27, id: '妈', char: '妈', pinyin: 'mā', words: ['妈妈', '爸妈'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“妈妈”的儿童配图' } },
+  { order: 28, id: '家', char: '家', pinyin: 'jiā', words: ['家人', '回家'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“家人”的儿童配图' } },
+  { order: 29, id: '我', char: '我', pinyin: 'wǒ', words: ['我们', '我的'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“我们”的儿童配图' } },
+  { order: 30, id: '你', char: '你', pinyin: 'nǐ', words: ['你好', '你们'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“你好”的儿童配图' } },
+  { order: 31, id: '他', char: '他', pinyin: 'tā', words: ['他们', '他的'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“他们”的儿童配图' } },
+  { order: 32, id: '女', char: '女', pinyin: 'nǚ', words: ['女孩', '女儿'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“女孩”的儿童配图' } },
+  { order: 33, id: '男', char: '男', pinyin: 'nán', words: ['男孩', '男人'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“男孩”的儿童配图' } },
+  { order: 34, id: '子', char: '子', pinyin: 'zǐ', words: ['孩子', '儿子'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“孩子”的儿童配图' } },
+  { order: 35, id: '头', char: '头', pinyin: 'tóu', words: ['头发', '点头'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“头发”的儿童配图' } },
+  { order: 36, id: '脸', char: '脸', pinyin: 'liǎn', words: ['小脸', '洗脸'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“小脸”的儿童配图' } },
+  { order: 37, id: '牙', char: '牙', pinyin: 'yá', words: ['牙齿', '刷牙'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“牙齿”的儿童配图' } },
+  { order: 38, id: '足', char: '足', pinyin: 'zú', words: ['手足', '足球'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“手足”的儿童配图' } },
+  { order: 39, id: '心', char: '心', pinyin: 'xīn', words: ['小心', '开心'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“小心”的儿童配图' } },
+  { order: 40, id: '一', char: '一', pinyin: 'yī', words: ['一个', '第一'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“一个”的儿童配图' } },
+  { order: 41, id: '二', char: '二', pinyin: 'èr', words: ['二月', '第二'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“二月”的儿童配图' } },
+  { order: 42, id: '三', char: '三', pinyin: 'sān', words: ['三个', '第三'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“三个”的儿童配图' } },
+  { order: 43, id: '四', char: '四', pinyin: 'sì', words: ['四只', '第四'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“四只”的儿童配图' } },
+  { order: 44, id: '五', char: '五', pinyin: 'wǔ', words: ['五个', '五月'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“五个”的儿童配图' } },
+  { order: 45, id: '六', char: '六', pinyin: 'liù', words: ['六只', '六月'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“六只”的儿童配图' } },
+  { order: 46, id: '七', char: '七', pinyin: 'qī', words: ['七天', '七个'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“七天”的儿童配图' } },
+  { order: 47, id: '八', char: '八', pinyin: 'bā', words: ['八只', '八月'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“八只”的儿童配图' } },
+  { order: 48, id: '九', char: '九', pinyin: 'jiǔ', words: ['九个', '九月'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“九个”的儿童配图' } },
+  { order: 49, id: '十', char: '十', pinyin: 'shí', words: ['十个', '十月'], category: '数字', audio: null, image: { symbol: '🔢', alt: '展示“十个”的儿童配图' } },
+  { order: 50, id: '个', char: '个', pinyin: 'gè', words: ['一个', '个人'], category: '数量', audio: null, image: { symbol: '🔵', alt: '展示“一个”的儿童配图' } },
+  { order: 51, id: '只', char: '只', pinyin: 'zhī', words: ['一只', '三只'], category: '数量', audio: null, image: { symbol: '🔵', alt: '展示“一只”的儿童配图' } },
+  { order: 52, id: '里', char: '里', pinyin: 'lǐ', words: ['里面', '家里'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“里面”的儿童配图' } },
+  { order: 53, id: '外', char: '外', pinyin: 'wài', words: ['外面', '门外'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“外面”的儿童配图' } },
+  { order: 54, id: '开', char: '开', pinyin: 'kāi', words: ['开门', '打开'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“开门”的儿童配图' } },
+  { order: 55, id: '关', char: '关', pinyin: 'guān', words: ['关门', '关灯'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“关门”的儿童配图' } },
+  { order: 56, id: '门', char: '门', pinyin: 'mén', words: ['大门', '门口'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“大门”的儿童配图' } },
+  { order: 57, id: '米', char: '米', pinyin: 'mǐ', words: ['大米', '米饭'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“大米”的儿童配图' } },
+  { order: 58, id: '饭', char: '饭', pinyin: 'fàn', words: ['米饭', '吃饭'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“米饭”的儿童配图' } },
+  { order: 59, id: '菜', char: '菜', pinyin: 'cài', words: ['青菜', '饭菜'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“青菜”的儿童配图' } },
+  { order: 60, id: '果', char: '果', pinyin: 'guǒ', words: ['水果', '果汁'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“水果”的儿童配图' } },
+  { order: 61, id: '花', char: '花', pinyin: 'huā', words: ['红花', '花朵'], category: '植物', audio: null, image: { symbol: '🌱', alt: '展示“红花”的儿童配图' } },
+  { order: 62, id: '草', char: '草', pinyin: 'cǎo', words: ['小草', '草地'], category: '植物', audio: null, image: { symbol: '🌱', alt: '展示“小草”的儿童配图' } },
+  { order: 63, id: '树', char: '树', pinyin: 'shù', words: ['大树', '树叶'], category: '植物', audio: null, image: { symbol: '🌱', alt: '展示“大树”的儿童配图' } },
+  { order: 64, id: '鸟', char: '鸟', pinyin: 'niǎo', words: ['小鸟', '飞鸟'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小鸟”的儿童配图' } },
+  { order: 65, id: '鱼', char: '鱼', pinyin: 'yú', words: ['小鱼', '金鱼'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小鱼”的儿童配图' } },
+  { order: 66, id: '猫', char: '猫', pinyin: 'māo', words: ['小猫', '花猫'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小猫”的儿童配图' } },
+  { order: 67, id: '狗', char: '狗', pinyin: 'gǒu', words: ['小狗', '花狗'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小狗”的儿童配图' } },
+  { order: 68, id: '牛', char: '牛', pinyin: 'niú', words: ['小牛', '水牛'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小牛”的儿童配图' } },
+  { order: 69, id: '马', char: '马', pinyin: 'mǎ', words: ['小马', '白马'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小马”的儿童配图' } },
+  { order: 70, id: '羊', char: '羊', pinyin: 'yáng', words: ['小羊', '山羊'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小羊”的儿童配图' } },
+  { order: 71, id: '虫', char: '虫', pinyin: 'chóng', words: ['小虫', '虫子'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小虫”的儿童配图' } },
+  { order: 72, id: '车', char: '车', pinyin: 'chē', words: ['汽车', '开车'], category: '交通', audio: null, image: { symbol: '🚗', alt: '展示“汽车”的儿童配图' } },
+  { order: 73, id: '船', char: '船', pinyin: 'chuán', words: ['小船', '坐船'], category: '交通', audio: null, image: { symbol: '🚗', alt: '展示“小船”的儿童配图' } },
+  { order: 74, id: '书', char: '书', pinyin: 'shū', words: ['看书', '书本'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“看书”的儿童配图' } },
+  { order: 75, id: '包', char: '包', pinyin: 'bāo', words: ['书包', '背包'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“书包”的儿童配图' } },
+  { order: 76, id: '衣', char: '衣', pinyin: 'yī', words: ['衣服', '上衣'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“衣服”的儿童配图' } },
+  { order: 77, id: '裤', char: '裤', pinyin: 'kù', words: ['裤子', '长裤'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“裤子”的儿童配图' } },
+  { order: 78, id: '鞋', char: '鞋', pinyin: 'xié', words: ['鞋子', '球鞋'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“鞋子”的儿童配图' } },
+  { order: 79, id: '桌', char: '桌', pinyin: 'zhuō', words: ['桌子', '书桌'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“桌子”的儿童配图' } },
+  { order: 80, id: '椅', char: '椅', pinyin: 'yǐ', words: ['椅子', '座椅'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“椅子”的儿童配图' } },
+  { order: 81, id: '床', char: '床', pinyin: 'chuáng', words: ['小床', '起床'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“小床”的儿童配图' } },
+  { order: 82, id: '灯', char: '灯', pinyin: 'dēng', words: ['电灯', '开灯'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“电灯”的儿童配图' } },
+  { order: 83, id: '杯', char: '杯', pinyin: 'bēi', words: ['水杯', '杯子'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“水杯”的儿童配图' } },
+  { order: 84, id: '碗', char: '碗', pinyin: 'wǎn', words: ['饭碗', '小碗'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“饭碗”的儿童配图' } },
+  { order: 85, id: '伞', char: '伞', pinyin: 'sǎn', words: ['雨伞', '打伞'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“雨伞”的儿童配图' } },
+  { order: 86, id: '早', char: '早', pinyin: 'zǎo', words: ['早上', '早安'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“早上”的儿童配图' } },
+  { order: 87, id: '晚', char: '晚', pinyin: 'wǎn', words: ['晚上', '晚安'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“晚上”的儿童配图' } },
+  { order: 88, id: '来', char: '来', pinyin: 'lái', words: ['过来', '回来'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“过来”的儿童配图' } },
+  { order: 89, id: '去', char: '去', pinyin: 'qù', words: ['回去', '出去'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“回去”的儿童配图' } },
+  { order: 90, id: '看', char: '看', pinyin: 'kàn', words: ['看书', '看见'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“看书”的儿童配图' } },
+  { order: 91, id: '听', char: '听', pinyin: 'tīng', words: ['听见', '听话'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“听见”的儿童配图' } },
+  { order: 92, id: '说', char: '说', pinyin: 'shuō', words: ['说话', '听说'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“说话”的儿童配图' } },
+  { order: 93, id: '笑', char: '笑', pinyin: 'xiào', words: ['大笑', '笑脸'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“大笑”的儿童配图' } },
+  { order: 94, id: '哭', char: '哭', pinyin: 'kū', words: ['哭声', '哭脸'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“哭声”的儿童配图' } },
+  { order: 95, id: '吃', char: '吃', pinyin: 'chī', words: ['吃饭', '吃菜'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“吃饭”的儿童配图' } },
+  { order: 96, id: '喝', char: '喝', pinyin: 'hē', words: ['喝水', '喝奶'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“喝水”的儿童配图' } },
+  { order: 97, id: '走', char: '走', pinyin: 'zǒu', words: ['走路', '走开'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“走路”的儿童配图' } },
+  { order: 98, id: '跑', char: '跑', pinyin: 'pǎo', words: ['跑步', '快跑'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“跑步”的儿童配图' } },
+  { order: 99, id: '坐', char: '坐', pinyin: 'zuò', words: ['坐下', '坐车'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“坐下”的儿童配图' } },
+  { order: 100, id: '站', char: '站', pinyin: 'zhàn', words: ['站立', '车站'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“站立”的儿童配图' } },
+  { order: 101, id: '身', char: '身', pinyin: 'shēn', words: ['身体', '身上'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“身体”的儿童配图' } },
+  { order: 102, id: '体', char: '体', pinyin: 'tǐ', words: ['身体', '体育'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“身体”的儿童配图' } },
+  { order: 103, id: '鼻', char: '鼻', pinyin: 'bí', words: ['鼻子', '鼻尖'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“鼻子”的儿童配图' } },
+  { order: 104, id: '嘴', char: '嘴', pinyin: 'zuǐ', words: ['嘴巴', '小嘴'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“嘴巴”的儿童配图' } },
+  { order: 105, id: '眼', char: '眼', pinyin: 'yǎn', words: ['眼睛', '双眼'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“眼睛”的儿童配图' } },
+  { order: 106, id: '发', char: '发', pinyin: 'fà', words: ['头发', '理发'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“头发”的儿童配图' } },
+  { order: 107, id: '脚', char: '脚', pinyin: 'jiǎo', words: ['小脚', '脚步'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“小脚”的儿童配图' } },
+  { order: 108, id: '腿', char: '腿', pinyin: 'tuǐ', words: ['小腿', '大腿'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“小腿”的儿童配图' } },
+  { order: 109, id: '肚', char: '肚', pinyin: 'dù', words: ['肚子', '肚皮'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“肚子”的儿童配图' } },
+  { order: 110, id: '背', char: '背', pinyin: 'bèi', words: ['后背', '背包'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“后背”的儿童配图' } },
+  { order: 111, id: '肩', char: '肩', pinyin: 'jiān', words: ['肩膀', '双肩'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“肩膀”的儿童配图' } },
+  { order: 112, id: '指', char: '指', pinyin: 'zhǐ', words: ['手指', '指向'], category: '身体', audio: null, image: { symbol: '👋', alt: '展示“手指”的儿童配图' } },
+  { order: 113, id: '动', char: '动', pinyin: 'dòng', words: ['动作', '运动'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“动作”的儿童配图' } },
+  { order: 114, id: '作', char: '作', pinyin: 'zuò', words: ['动作', '作业'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“动作”的儿童配图' } },
+  { order: 115, id: '拿', char: '拿', pinyin: 'ná', words: ['拿起', '拿走'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“拿起”的儿童配图' } },
+  { order: 116, id: '放', char: '放', pinyin: 'fàng', words: ['放下', '开放'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“放下”的儿童配图' } },
+  { order: 117, id: '推', char: '推', pinyin: 'tuī', words: ['推门', '推车'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“推门”的儿童配图' } },
+  { order: 118, id: '拉', char: '拉', pinyin: 'lā', words: ['拉手', '拉车'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“拉手”的儿童配图' } },
+  { order: 119, id: '抱', char: '抱', pinyin: 'bào', words: ['抱抱', '抱起'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“抱抱”的儿童配图' } },
+  { order: 120, id: '跳', char: '跳', pinyin: 'tiào', words: ['跳高', '跳起'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“跳高”的儿童配图' } },
+  { order: 121, id: '蹲', char: '蹲', pinyin: 'dūn', words: ['蹲下', '蹲着'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“蹲下”的儿童配图' } },
+  { order: 122, id: '爬', char: '爬', pinyin: 'pá', words: ['爬山', '爬树'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“爬山”的儿童配图' } },
+  { order: 123, id: '游', char: '游', pinyin: 'yóu', words: ['游泳', '游玩'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“游泳”的儿童配图' } },
+  { order: 124, id: '飞', char: '飞', pinyin: 'fēi', words: ['飞鸟', '飞机'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“飞鸟”的儿童配图' } },
+  { order: 125, id: '唱', char: '唱', pinyin: 'chàng', words: ['唱歌', '歌唱'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“唱歌”的儿童配图' } },
+  { order: 126, id: '读', char: '读', pinyin: 'dú', words: ['读书', '朗读'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“读书”的儿童配图' } },
+  { order: 127, id: '写', char: '写', pinyin: 'xiě', words: ['写字', '书写'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“写字”的儿童配图' } },
+  { order: 128, id: '画', char: '画', pinyin: 'huà', words: ['画画', '图画'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“画画”的儿童配图' } },
+  { order: 129, id: '做', char: '做', pinyin: 'zuò', words: ['做事', '做饭'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“做事”的儿童配图' } },
+  { order: 130, id: '洗', char: '洗', pinyin: 'xǐ', words: ['洗手', '洗脸'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“洗手”的儿童配图' } },
+  { order: 131, id: '穿', char: '穿', pinyin: 'chuān', words: ['穿衣', '穿鞋'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“穿衣”的儿童配图' } },
+  { order: 132, id: '脱', char: '脱', pinyin: 'tuō', words: ['脱衣', '脱鞋'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“脱衣”的儿童配图' } },
+  { order: 133, id: '睡', char: '睡', pinyin: 'shuì', words: ['睡觉', '睡着'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“睡觉”的儿童配图' } },
+  { order: 134, id: '醒', char: '醒', pinyin: 'xǐng', words: ['睡醒', '醒来'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“睡醒”的儿童配图' } },
+  { order: 135, id: '兔', char: '兔', pinyin: 'tù', words: ['兔子', '白兔'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“兔子”的儿童配图' } },
+  { order: 136, id: '鸡', char: '鸡', pinyin: 'jī', words: ['小鸡', '公鸡'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小鸡”的儿童配图' } },
+  { order: 137, id: '鸭', char: '鸭', pinyin: 'yā', words: ['小鸭', '鸭子'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小鸭”的儿童配图' } },
+  { order: 138, id: '鹅', char: '鹅', pinyin: 'é', words: ['白鹅', '天鹅'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“白鹅”的儿童配图' } },
+  { order: 139, id: '猪', char: '猪', pinyin: 'zhū', words: ['小猪', '猪肉'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小猪”的儿童配图' } },
+  { order: 140, id: '鼠', char: '鼠', pinyin: 'shǔ', words: ['老鼠', '松鼠'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“老鼠”的儿童配图' } },
+  { order: 141, id: '虎', char: '虎', pinyin: 'hǔ', words: ['老虎', '虎牙'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“老虎”的儿童配图' } },
+  { order: 142, id: '象', char: '象', pinyin: 'xiàng', words: ['大象', '象牙'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“大象”的儿童配图' } },
+  { order: 143, id: '猴', char: '猴', pinyin: 'hóu', words: ['猴子', '小猴'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“猴子”的儿童配图' } },
+  { order: 144, id: '鹿', char: '鹿', pinyin: 'lù', words: ['小鹿', '长颈鹿'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小鹿”的儿童配图' } },
+  { order: 145, id: '熊', char: '熊', pinyin: 'xióng', words: ['小熊', '熊猫'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小熊”的儿童配图' } },
+  { order: 146, id: '狮', char: '狮', pinyin: 'shī', words: ['狮子', '海狮'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“狮子”的儿童配图' } },
+  { order: 147, id: '蛇', char: '蛇', pinyin: 'shé', words: ['小蛇', '蛇尾'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“小蛇”的儿童配图' } },
+  { order: 148, id: '蛙', char: '蛙', pinyin: 'wā', words: ['青蛙', '牛蛙'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“青蛙”的儿童配图' } },
+  { order: 149, id: '蜂', char: '蜂', pinyin: 'fēng', words: ['蜜蜂', '蜂蜜'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“蜜蜂”的儿童配图' } },
+  { order: 150, id: '蝶', char: '蝶', pinyin: 'dié', words: ['蝴蝶', '彩蝶'], category: '动物', audio: null, image: { symbol: '🐾', alt: '展示“蝴蝶”的儿童配图' } },
+  { order: 151, id: '河', char: '河', pinyin: 'hé', words: ['小河', '河水'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“小河”的儿童配图' } },
+  { order: 152, id: '海', char: '海', pinyin: 'hǎi', words: ['大海', '海水'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“大海”的儿童配图' } },
+  { order: 153, id: '湖', char: '湖', pinyin: 'hú', words: ['湖水', '西湖'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“湖水”的儿童配图' } },
+  { order: 154, id: '石', char: '石', pinyin: 'shí', words: ['石头', '石子'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“石头”的儿童配图' } },
+  { order: 155, id: '沙', char: '沙', pinyin: 'shā', words: ['沙子', '沙滩'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“沙子”的儿童配图' } },
+  { order: 156, id: '星', char: '星', pinyin: 'xīng', words: ['星星', '星光'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“星星”的儿童配图' } },
+  { order: 157, id: '阳', char: '阳', pinyin: 'yáng', words: ['太阳', '阳光'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“太阳”的儿童配图' } },
+  { order: 158, id: '雪', char: '雪', pinyin: 'xuě', words: ['下雪', '雪人'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“下雪”的儿童配图' } },
+  { order: 159, id: '冰', char: '冰', pinyin: 'bīng', words: ['冰块', '冰雪'], category: '自然', audio: null, image: { symbol: '🌿', alt: '展示“冰块”的儿童配图' } },
+  { order: 160, id: '春', char: '春', pinyin: 'chūn', words: ['春天', '春风'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“春天”的儿童配图' } },
+  { order: 161, id: '夏', char: '夏', pinyin: 'xià', words: ['夏天', '夏日'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“夏天”的儿童配图' } },
+  { order: 162, id: '秋', char: '秋', pinyin: 'qiū', words: ['秋天', '秋风'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“秋天”的儿童配图' } },
+  { order: 163, id: '冬', char: '冬', pinyin: 'dōng', words: ['冬天', '冬日'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“冬天”的儿童配图' } },
+  { order: 164, id: '蛋', char: '蛋', pinyin: 'dàn', words: ['鸡蛋', '蛋黄'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“鸡蛋”的儿童配图' } },
+  { order: 165, id: '肉', char: '肉', pinyin: 'ròu', words: ['猪肉', '肉片'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“猪肉”的儿童配图' } },
+  { order: 166, id: '奶', char: '奶', pinyin: 'nǎi', words: ['牛奶', '奶奶'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“牛奶”的儿童配图' } },
+  { order: 167, id: '面', char: '面', pinyin: 'miàn', words: ['面条', '面包'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“面条”的儿童配图' } },
+  { order: 168, id: '豆', char: '豆', pinyin: 'dòu', words: ['豆子', '红豆'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“豆子”的儿童配图' } },
+  { order: 169, id: '瓜', char: '瓜', pinyin: 'guā', words: ['西瓜', '南瓜'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“西瓜”的儿童配图' } },
+  { order: 170, id: '桃', char: '桃', pinyin: 'táo', words: ['桃子', '黄桃'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“桃子”的儿童配图' } },
+  { order: 171, id: '梨', char: '梨', pinyin: 'lí', words: ['梨子', '雪梨'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“梨子”的儿童配图' } },
+  { order: 172, id: '苹', char: '苹', pinyin: 'píng', words: ['苹果', '苹果树'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“苹果”的儿童配图' } },
+  { order: 173, id: '糖', char: '糖', pinyin: 'táng', words: ['白糖', '糖果'], category: '食物', audio: null, image: { symbol: '🍽️', alt: '展示“白糖”的儿童配图' } },
+  { order: 174, id: '哥', char: '哥', pinyin: 'gē', words: ['哥哥', '大哥'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“哥哥”的儿童配图' } },
+  { order: 175, id: '姐', char: '姐', pinyin: 'jiě', words: ['姐姐', '大姐'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“姐姐”的儿童配图' } },
+  { order: 176, id: '弟', char: '弟', pinyin: 'dì', words: ['弟弟', '小弟'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“弟弟”的儿童配图' } },
+  { order: 177, id: '妹', char: '妹', pinyin: 'mèi', words: ['妹妹', '小妹'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“妹妹”的儿童配图' } },
+  { order: 178, id: '爷', char: '爷', pinyin: 'yé', words: ['爷爷', '老爷爷'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“爷爷”的儿童配图' } },
+  { order: 179, id: '婆', char: '婆', pinyin: 'pó', words: ['婆婆', '老婆婆'], category: '家庭', audio: null, image: { symbol: '👨‍👩‍👧‍👦', alt: '展示“婆婆”的儿童配图' } },
+  { order: 180, id: '老', char: '老', pinyin: 'lǎo', words: ['老人', '老师'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“老人”的儿童配图' } },
+  { order: 181, id: '师', char: '师', pinyin: 'shī', words: ['老师', '师生'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“老师”的儿童配图' } },
+  { order: 182, id: '生', char: '生', pinyin: 'shēng', words: ['学生', '生日'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“学生”的儿童配图' } },
+  { order: 183, id: '学', char: '学', pinyin: 'xué', words: ['学习', '学生'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“学习”的儿童配图' } },
+  { order: 184, id: '校', char: '校', pinyin: 'xiào', words: ['学校', '校门'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“学校”的儿童配图' } },
+  { order: 185, id: '班', char: '班', pinyin: 'bān', words: ['班级', '上班'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“班级”的儿童配图' } },
+  { order: 186, id: '友', char: '友', pinyin: 'yǒu', words: ['朋友', '好友'], category: '人物', audio: null, image: { symbol: '🧒', alt: '展示“朋友”的儿童配图' } },
+  { order: 187, id: '笔', char: '笔', pinyin: 'bǐ', words: ['铅笔', '画笔'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“铅笔”的儿童配图' } },
+  { order: 188, id: '纸', char: '纸', pinyin: 'zhǐ', words: ['白纸', '纸张'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“白纸”的儿童配图' } },
+  { order: 189, id: '尺', char: '尺', pinyin: 'chǐ', words: ['尺子', '直尺'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“尺子”的儿童配图' } },
+  { order: 190, id: '球', char: '球', pinyin: 'qiú', words: ['皮球', '足球'], category: '玩具', audio: null, image: { symbol: '🧸', alt: '展示“皮球”的儿童配图' } },
+  { order: 191, id: '玩', char: '玩', pinyin: 'wán', words: ['玩具', '好玩'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“玩具”的儿童配图' } },
+  { order: 192, id: '乐', char: '乐', pinyin: 'lè', words: ['快乐', '音乐'], category: '情感', audio: null, image: { symbol: '😊', alt: '展示“快乐”的儿童配图' } },
+  { order: 193, id: '圆', char: '圆', pinyin: 'yuán', words: ['圆形', '圆球'], category: '形状', audio: null, image: { symbol: '🔷', alt: '展示“圆形”的儿童配图' } },
+  { order: 194, id: '方', char: '方', pinyin: 'fāng', words: ['方形', '方向'], category: '形状', audio: null, image: { symbol: '🔷', alt: '展示“方形”的儿童配图' } },
+  { order: 195, id: '红', char: '红', pinyin: 'hóng', words: ['红花', '红色'], category: '颜色', audio: null, image: { symbol: '🎨', alt: '展示“红花”的儿童配图' } },
+  { order: 196, id: '黄', char: '黄', pinyin: 'huáng', words: ['黄花', '黄色'], category: '颜色', audio: null, image: { symbol: '🎨', alt: '展示“黄花”的儿童配图' } },
+  { order: 197, id: '蓝', char: '蓝', pinyin: 'lán', words: ['蓝天', '蓝色'], category: '颜色', audio: null, image: { symbol: '🎨', alt: '展示“蓝天”的儿童配图' } },
+  { order: 198, id: '绿', char: '绿', pinyin: 'lǜ', words: ['绿草', '绿色'], category: '颜色', audio: null, image: { symbol: '🎨', alt: '展示“绿草”的儿童配图' } },
+  { order: 199, id: '白', char: '白', pinyin: 'bái', words: ['白云', '白色'], category: '颜色', audio: null, image: { symbol: '🎨', alt: '展示“白云”的儿童配图' } },
+  { order: 200, id: '黑', char: '黑', pinyin: 'hēi', words: ['黑夜', '黑色'], category: '颜色', audio: null, image: { symbol: '🎨', alt: '展示“黑夜”的儿童配图' } },
+  { order: 201, id: '年', char: '年', pinyin: 'nián', words: ['新年', '今年'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“新年”的儿童配图' } },
+  { order: 202, id: '时', char: '时', pinyin: 'shí', words: ['时间', '小时'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“时间”的儿童配图' } },
+  { order: 203, id: '分', char: '分', pinyin: 'fēn', words: ['分开', '分钟'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“分开”的儿童配图' } },
+  { order: 204, id: '秒', char: '秒', pinyin: 'miǎo', words: ['秒针', '几秒'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“秒针”的儿童配图' } },
+  { order: 205, id: '今', char: '今', pinyin: 'jīn', words: ['今天', '今年'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“今天”的儿童配图' } },
+  { order: 206, id: '明', char: '明', pinyin: 'míng', words: ['明天', '明亮'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“明天”的儿童配图' } },
+  { order: 207, id: '昨', char: '昨', pinyin: 'zuó', words: ['昨天', '昨日'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“昨天”的儿童配图' } },
+  { order: 208, id: '午', char: '午', pinyin: 'wǔ', words: ['中午', '午饭'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“中午”的儿童配图' } },
+  { order: 209, id: '点', char: '点', pinyin: 'diǎn', words: ['点头', '雨点'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“点头”的儿童配图' } },
+  { order: 210, id: '半', char: '半', pinyin: 'bàn', words: ['一半', '半天'], category: '数量', audio: null, image: { symbol: '🔵', alt: '展示“一半”的儿童配图' } },
+  { order: 211, id: '每', char: '每', pinyin: 'měi', words: ['每天', '每个'], category: '时间', audio: null, image: { symbol: '🕐', alt: '展示“每天”的儿童配图' } },
+  { order: 212, id: '先', char: '先', pinyin: 'xiān', words: ['先后', '先生'], category: '顺序', audio: null, image: { symbol: '🔢', alt: '展示“先后”的儿童配图' } },
+  { order: 213, id: '再', char: '再', pinyin: 'zài', words: ['再见', '再来'], category: '顺序', audio: null, image: { symbol: '🔢', alt: '展示“再见”的儿童配图' } },
+  { order: 214, id: '东', char: '东', pinyin: 'dōng', words: ['东方', '东边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“东方”的儿童配图' } },
+  { order: 215, id: '南', char: '南', pinyin: 'nán', words: ['南方', '南边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“南方”的儿童配图' } },
+  { order: 216, id: '西', char: '西', pinyin: 'xī', words: ['西方', '西边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“西方”的儿童配图' } },
+  { order: 217, id: '北', char: '北', pinyin: 'běi', words: ['北方', '北边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“北方”的儿童配图' } },
+  { order: 218, id: '边', char: '边', pinyin: 'biān', words: ['左边', '旁边'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“左边”的儿童配图' } },
+  { order: 219, id: '旁', char: '旁', pinyin: 'páng', words: ['旁边', '身旁'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“旁边”的儿童配图' } },
+  { order: 220, id: '近', char: '近', pinyin: 'jìn', words: ['近处', '走近'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“近处”的儿童配图' } },
+  { order: 221, id: '远', char: '远', pinyin: 'yuǎn', words: ['远处', '很远'], category: '方位', audio: null, image: { symbol: '↔️', alt: '展示“远处”的儿童配图' } },
+  { order: 222, id: '高', char: '高', pinyin: 'gāo', words: ['高山', '长高'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“高山”的儿童配图' } },
+  { order: 223, id: '低', char: '低', pinyin: 'dī', words: ['低头', '低处'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“低头”的儿童配图' } },
+  { order: 224, id: '长', char: '长', pinyin: 'cháng', words: ['长短', '很长'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“长短”的儿童配图' } },
+  { order: 225, id: '短', char: '短', pinyin: 'duǎn', words: ['长短', '短小'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“长短”的儿童配图' } },
+  { order: 226, id: '多', char: '多', pinyin: 'duō', words: ['多少', '很多'], category: '数量', audio: null, image: { symbol: '🔵', alt: '展示“多少”的儿童配图' } },
+  { order: 227, id: '少', char: '少', pinyin: 'shǎo', words: ['多少', '很少'], category: '数量', audio: null, image: { symbol: '🔵', alt: '展示“多少”的儿童配图' } },
+  { order: 228, id: '新', char: '新', pinyin: 'xīn', words: ['新年', '新衣'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“新年”的儿童配图' } },
+  { order: 229, id: '旧', char: '旧', pinyin: 'jiù', words: ['旧书', '旧衣'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“旧书”的儿童配图' } },
+  { order: 230, id: '好', char: '好', pinyin: 'hǎo', words: ['好人', '友好'], category: '情感', audio: null, image: { symbol: '😊', alt: '展示“好人”的儿童配图' } },
+  { order: 231, id: '坏', char: '坏', pinyin: 'huài', words: ['坏人', '坏掉'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“坏人”的儿童配图' } },
+  { order: 232, id: '对', char: '对', pinyin: 'duì', words: ['对错', '答对'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“对错”的儿童配图' } },
+  { order: 233, id: '错', char: '错', pinyin: 'cuò', words: ['对错', '认错'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“对错”的儿童配图' } },
+  { order: 234, id: '真', char: '真', pinyin: 'zhēn', words: ['真的', '认真'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“真的”的儿童配图' } },
+  { order: 235, id: '假', char: '假', pinyin: 'jiǎ', words: ['假山', '真假'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“假山”的儿童配图' } },
+  { order: 236, id: '快', char: '快', pinyin: 'kuài', words: ['快跑', '快乐'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“快跑”的儿童配图' } },
+  { order: 237, id: '慢', char: '慢', pinyin: 'màn', words: ['慢走', '很慢'], category: '概念', audio: null, image: { symbol: '💡', alt: '展示“慢走”的儿童配图' } },
+  { order: 238, id: '冷', char: '冷', pinyin: 'lěng', words: ['冷水', '寒冷'], category: '感受', audio: null, image: { symbol: '🙂', alt: '展示“冷水”的儿童配图' } },
+  { order: 239, id: '热', char: '热', pinyin: 'rè', words: ['热水', '炎热'], category: '感受', audio: null, image: { symbol: '🙂', alt: '展示“热水”的儿童配图' } },
+  { order: 240, id: '干', char: '干', pinyin: 'gān', words: ['干净', '饼干'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“干净”的儿童配图' } },
+  { order: 241, id: '湿', char: '湿', pinyin: 'shī', words: ['湿手', '湿地'], category: '感受', audio: null, image: { symbol: '🙂', alt: '展示“湿手”的儿童配图' } },
+  { order: 242, id: '教', char: '教', pinyin: 'jiāo', words: ['教书', '教我'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“教书”的儿童配图' } },
+  { order: 243, id: '室', char: '室', pinyin: 'shì', words: ['教室', '室内'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“教室”的儿童配图' } },
+  { order: 244, id: '课', char: '课', pinyin: 'kè', words: ['上课', '课本'], category: '学校', audio: null, image: { symbol: '📚', alt: '展示“上课”的儿童配图' } },
+  { order: 245, id: '文', char: '文', pinyin: 'wén', words: ['语文', '文字'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“语文”的儿童配图' } },
+  { order: 246, id: '字', char: '字', pinyin: 'zì', words: ['汉字', '写字'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“汉字”的儿童配图' } },
+  { order: 247, id: '词', char: '词', pinyin: 'cí', words: ['词语', '组词'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“词语”的儿童配图' } },
+  { order: 248, id: '句', char: '句', pinyin: 'jù', words: ['句子', '造句'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“句子”的儿童配图' } },
+  { order: 249, id: '题', char: '题', pinyin: 'tí', words: ['题目', '答题'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“题目”的儿童配图' } },
+  { order: 250, id: '答', char: '答', pinyin: 'dá', words: ['回答', '答对'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“回答”的儿童配图' } },
+  { order: 251, id: '问', char: '问', pinyin: 'wèn', words: ['问题', '提问'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“问题”的儿童配图' } },
+  { order: 252, id: '认', char: '认', pinyin: 'rèn', words: ['认识', '认字'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“认识”的儿童配图' } },
+  { order: 253, id: '识', char: '识', pinyin: 'shí', words: ['认识', '识字'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“认识”的儿童配图' } },
+  { order: 254, id: '记', char: '记', pinyin: 'jì', words: ['记住', '日记'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“记住”的儿童配图' } },
+  { order: 255, id: '想', char: '想', pinyin: 'xiǎng', words: ['想法', '想念'], category: '思考', audio: null, image: { symbol: '💭', alt: '展示“想法”的儿童配图' } },
+  { order: 256, id: '知', char: '知', pinyin: 'zhī', words: ['知道', '知识'], category: '学习', audio: null, image: { symbol: '✏️', alt: '展示“知道”的儿童配图' } },
+  { order: 257, id: '道', char: '道', pinyin: 'dào', words: ['知道', '道路'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“知道”的儿童配图' } },
+  { order: 258, id: '起', char: '起', pinyin: 'qǐ', words: ['起床', '起来'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“起床”的儿童配图' } },
+  { order: 259, id: '回', char: '回', pinyin: 'huí', words: ['回家', '回来'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“回家”的儿童配图' } },
+  { order: 260, id: '进', char: '进', pinyin: 'jìn', words: ['进去', '前进'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“进去”的儿童配图' } },
+  { order: 261, id: '出', char: '出', pinyin: 'chū', words: ['出来', '出去'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“出来”的儿童配图' } },
+  { order: 262, id: '过', char: '过', pinyin: 'guò', words: ['过去', '走过'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“过去”的儿童配图' } },
+  { order: 263, id: '到', char: '到', pinyin: 'dào', words: ['到家', '来到'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“到家”的儿童配图' } },
+  { order: 264, id: '给', char: '给', pinyin: 'gěi', words: ['送给', '交给'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“送给”的儿童配图' } },
+  { order: 265, id: '找', char: '找', pinyin: 'zhǎo', words: ['找人', '找到'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“找人”的儿童配图' } },
+  { order: 266, id: '用', char: '用', pinyin: 'yòng', words: ['使用', '有用'], category: '动作', audio: null, image: { symbol: '🏃', alt: '展示“使用”的儿童配图' } },
+  { order: 267, id: '把', char: '把', pinyin: 'bǎ', words: ['把手', '一把伞'], category: '数量', audio: null, image: { symbol: '🔵', alt: '展示“把手”的儿童配图' } },
+  { order: 268, id: '会', char: '会', pinyin: 'huì', words: ['学会', '开会'], category: '能力', audio: null, image: { symbol: '💪', alt: '展示“学会”的儿童配图' } },
+  { order: 269, id: '能', char: '能', pinyin: 'néng', words: ['能够', '能干'], category: '能力', audio: null, image: { symbol: '💪', alt: '展示“能够”的儿童配图' } },
+  { order: 270, id: '要', char: '要', pinyin: 'yào', words: ['需要', '想要'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“需要”的儿童配图' } },
+  { order: 271, id: '有', char: '有', pinyin: 'yǒu', words: ['没有', '所有'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“没有”的儿童配图' } },
+  { order: 272, id: '没', char: '没', pinyin: 'méi', words: ['没有', '没事'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“没有”的儿童配图' } },
+  { order: 273, id: '是', char: '是', pinyin: 'shì', words: ['是的', '不是'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“是的”的儿童配图' } },
+  { order: 274, id: '在', char: '在', pinyin: 'zài', words: ['现在', '正在'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“现在”的儿童配图' } },
+  { order: 275, id: '和', char: '和', pinyin: 'hé', words: ['我和你', '和平'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“我和你”的儿童配图' } },
+  { order: 276, id: '跟', char: '跟', pinyin: 'gēn', words: ['跟着', '脚跟'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“跟着”的儿童配图' } },
+  { order: 277, id: '也', char: '也', pinyin: 'yě', words: ['也好', '也来'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“也好”的儿童配图' } },
+  { order: 278, id: '都', char: '都', pinyin: 'dōu', words: ['都是', '全都'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“都是”的儿童配图' } },
+  { order: 279, id: '很', char: '很', pinyin: 'hěn', words: ['很好', '很多'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“很好”的儿童配图' } },
+  { order: 280, id: '更', char: '更', pinyin: 'gèng', words: ['更大', '更多'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“更大”的儿童配图' } },
+  { order: 281, id: '最', char: '最', pinyin: 'zuì', words: ['最大', '最好'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“最大”的儿童配图' } },
+  { order: 282, id: '这', char: '这', pinyin: 'zhè', words: ['这里', '这个'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“这里”的儿童配图' } },
+  { order: 283, id: '那', char: '那', pinyin: 'nà', words: ['那里', '那个'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“那里”的儿童配图' } },
+  { order: 284, id: '哪', char: '哪', pinyin: 'nǎ', words: ['哪里', '哪个'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“哪里”的儿童配图' } },
+  { order: 285, id: '谁', char: '谁', pinyin: 'shuí', words: ['是谁', '谁的'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“是谁”的儿童配图' } },
+  { order: 286, id: '么', char: '么', pinyin: 'me', words: ['什么', '怎么'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“什么”的儿童配图' } },
+  { order: 287, id: '为', char: '为', pinyin: 'wèi', words: ['因为', '为了'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“因为”的儿童配图' } },
+  { order: 288, id: '因', char: '因', pinyin: 'yīn', words: ['因为', '原因'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“因为”的儿童配图' } },
+  { order: 289, id: '可', char: '可', pinyin: 'kě', words: ['可以', '可爱'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“可以”的儿童配图' } },
+  { order: 290, id: '不', char: '不', pinyin: 'bù', words: ['不要', '不是'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“不要”的儿童配图' } },
+  { order: 291, id: '得', char: '得', pinyin: 'de', words: ['跑得快', '做得好'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“跑得快”的儿童配图' } },
+  { order: 292, id: '的', char: '的', pinyin: 'de', words: ['我的', '你的'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“我的”的儿童配图' } },
+  { order: 293, id: '了', char: '了', pinyin: 'le', words: ['好了', '吃了'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“好了”的儿童配图' } },
+  { order: 294, id: '着', char: '着', pinyin: 'zhe', words: ['看着', '听着'], category: '高频字', audio: null, image: { symbol: '💬', alt: '展示“看着”的儿童配图' } },
+  { order: 295, id: '园', char: '园', pinyin: 'yuán', words: ['公园', '花园'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“公园”的儿童配图' } },
+  { order: 296, id: '路', char: '路', pinyin: 'lù', words: ['马路', '走路'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“马路”的儿童配图' } },
+  { order: 297, id: '桥', char: '桥', pinyin: 'qiáo', words: ['小桥', '过桥'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“小桥”的儿童配图' } },
+  { order: 298, id: '房', char: '房', pinyin: 'fáng', words: ['房子', '房间'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“房子”的儿童配图' } },
+  { order: 299, id: '屋', char: '屋', pinyin: 'wū', words: ['屋子', '屋里'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“屋子”的儿童配图' } },
+  { order: 300, id: '店', char: '店', pinyin: 'diàn', words: ['商店', '书店'], category: '生活', audio: null, image: { symbol: '🏠', alt: '展示“商店”的儿童配图' } }
+];
+
+const STORAGE_KEY = 'little-hanzi-learning-v1';
+
+const emptyData = () => ({ version: 1, records: {} });
+
+function createLearningStore(storage, now = () => new Date()) {
+  function load() {
+    try {
+      const saved = JSON.parse(storage.getItem(STORAGE_KEY));
+      if (saved?.version === 1 && saved.records && typeof saved.records === 'object') return saved;
+    } catch {
+      // 损坏或旧格式的数据不阻止孩子继续使用。
+    }
+    return emptyData();
+  }
+
+  function save(data) {
+    storage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function mark(characterId, status) {
+    if (!['known', 'learning'].includes(status)) throw new Error('Unknown learning status');
+    const data = load();
+    const timestamp = now().toISOString();
+    const previous = data.records[characterId] ?? {
+      status: 'unseen', firstLearnedAt: timestamp, lastLearnedAt: timestamp,
+      studyCount: 0, knownCount: 0, learningCount: 0
+    };
+    data.records[characterId] = {
+      ...previous,
+      status,
+      firstLearnedAt: previous.firstLearnedAt || timestamp,
+      lastLearnedAt: timestamp,
+      studyCount: previous.studyCount + 1,
+      knownCount: previous.knownCount + (status === 'known' ? 1 : 0),
+      learningCount: previous.learningCount + (status === 'learning' ? 1 : 0)
+    };
+    save(data);
+    return data.records[characterId];
+  }
+
+  function getRecord(characterId) {
+    return load().records[characterId] ?? null;
+  }
+
+  function getStats(characterList) {
+    const records = load().records;
+    const known = characterList.filter(({ id }) => records[id]?.status === 'known').length;
+    const learning = characterList.filter(({ id }) => records[id]?.status === 'learning').length;
+    const total = characterList.length;
+    return { total, known, learning, unseen: total - known - learning, percent: total ? Math.round((known / total) * 100) : 0 };
+  }
+
+  function isLibraryComplete(characterList) {
+    const stats = getStats(characterList);
+    return stats.total > 0 && stats.known === stats.total;
+  }
+
+  function getTodayCount(characterList) {
+    const today = localDateKey(now());
+    return characterList.filter(({ id }) => {
+      const value = load().records[id]?.lastLearnedAt;
+      return value && localDateKey(new Date(value)) === today;
+    }).length;
+  }
+
+  function getRecent(characterList, limit = 5) {
+    const records = load().records;
+    return characterList.filter(({ id }) => records[id]).sort((a, b) =>
+      new Date(records[b.id].lastLearnedAt) - new Date(records[a.id].lastLearnedAt)
+    ).slice(0, limit);
+  }
+
+  function getReviewQueue(characterList) {
+    const records = load().records;
+    return characterList.filter(({ id }) => records[id]?.status === 'learning')
+      .sort((a, b) => new Date(records[a.id].lastLearnedAt) - new Date(records[b.id].lastLearnedAt));
+  }
+
+  // 今日识字在全部字都学过后仍沿用原有兜底顺序，不影响“复习一下”的范围。
+  function getPracticeQueue(characterList) {
+    const records = load().records;
+    const learning = getReviewQueue(characterList);
+    const known = characterList.filter(({ id }) => records[id]?.status === 'known')
+      .sort((a, b) => new Date(records[a.id].lastLearnedAt) - new Date(records[b.id].lastLearnedAt));
+    return [...learning, ...known];
+  }
+
+  return { load, mark, getRecord, getStats, isLibraryComplete, getTodayCount, getRecent, getReviewQueue, getPracticeQueue };
+}
+
+function localDateKey(date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+/**
+ * 使用设备自带的 Web Speech API 朗读普通话，不依赖网络接口。
+ * 华为 Pad 浏览器会使用系统中可用的中文语音；若没有中文语音，仍由
+ * 浏览器根据 zh-CN 语言标记选择最合适的系统语音。
+ */
+function createMandarinSpeaker({
+  synth = globalThis.speechSynthesis,
+  Utterance = globalThis.SpeechSynthesisUtterance
+} = {}) {
+  return function speak(text) {
+    if (!text || !synth || !Utterance) return false;
+
+    const utterance = new Utterance(text);
+    utterance.lang = 'zh-CN';
+    utterance.rate = 0.78;
+    utterance.pitch = 1.05;
+    utterance.volume = 1;
+
+    const voices = typeof synth.getVoices === 'function' ? synth.getVoices() : [];
+    const mandarinVoice = voices.find(voice => /^zh[-_]CN$/i.test(voice.lang))
+      || voices.find(voice => /^zh[-_](Hans|SG)/i.test(voice.lang))
+      || voices.find(voice => /^zh/i.test(voice.lang));
+    if (mandarinVoice) utterance.voice = mandarinVoice;
+
+    // 连续点击时停止上一次朗读，避免多个声音叠在一起。
+    synth.cancel();
+    synth.speak(utterance);
+    return true;
+  };
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function renderCharacterImage(image) {
+  if (!image?.symbol) return '';
+
+  const alt = escapeHtml(image.alt || '汉字配图');
+  return `<figure class="character-image" role="img" aria-label="${alt}">
+    <span aria-hidden="true">${escapeHtml(image.symbol)}</span>
+    <figcaption>${alt}</figcaption>
+  </figure>`;
+}
+
+
+const app = document.querySelector('#app');
+const store = createLearningStore(window.localStorage);
+const speakMandarin = createMandarinSpeaker();
+const DAILY_GOAL = 5;
+let session = null;
+
+const icons = {
+  learn: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 13c6-3 12-2 16 2 4-4 10-5 16-2v25c-6-3-12-2-16 2-4-4-10-5-16-2V13Z"/><path d="M24 15v25"/></svg>',
+  review: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M39 19a16 16 0 1 0 1 12"/><path d="m33 11 7 8 3-10"/></svg>',
+  known: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 41S7 32 7 19a9 9 0 0 1 17-4 9 9 0 0 1 17 4c0 13-17 22-17 22Z"/></svg>',
+  progress: '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 39V25h8v14M20 39V17h8v22M31 39V9h8v30"/></svg>'
+};
+
+function shell(content, options = {}) {
+  const { back = false, title = '' } = options;
+  app.innerHTML = `<div class="app-shell">
+    <header class="topbar ${back ? '' : 'home-topbar'}">
+      ${back ? '<button class="icon-button" data-route="home" aria-label="返回首页">←</button>' : '<div class="brand-mark" aria-hidden="true">小</div>'}
+      <div class="topbar-title">${title || '<span>小小识字</span><small>快乐学习每一天</small>'}</div>
+      ${back ? '<div class="topbar-spacer"></div>' : '<div class="sun-doodle" aria-hidden="true">☀</div>'}
+    </header>
+    <main>${content}</main>
+  </div>`;
+}
+
+function renderHome() {
+  session = null;
+  const stats = store.getStats(characters);
+  const isComplete = store.isLibraryComplete(characters);
+  const today = store.getTodayCount(characters);
+  const recent = store.getRecent(characters);
+  shell(`<section class="hero">
+      <div><p class="eyebrow">${isComplete ? '第一阶段完成啦！🎉' : '你好呀，小朋友！'}</p><h1>${isComplete ? `你已经完成当前全部 ${stats.total} 个汉字学习` : '今天继续识字吧 <span aria-hidden="true">🌱</span>'}</h1><p>${isComplete ? '当前字库已全部学完，可以继续扩充下一阶段字库。' : '每天认识一点点，汉字朋友越来越多。'}</p></div>
+      <div class="cloud" aria-hidden="true"><span>人</span><span>山</span><span>水</span></div>
+    </section>
+    <section class="stats-row" aria-label="学习数据">
+      ${statCard('已认识', stats.known, '个字', 'mint')}
+      ${statCard('正在学习', stats.learning, '个字', 'peach')}
+      ${statCard('今日学习', today, '个字', 'sky')}
+    </section>
+    <section class="section-block"><div class="section-heading"><h2>想做什么呢？</h2><span>点一点就开始</span></div>
+      <div class="action-grid">
+        ${actionCard('learn', '今日识字', '认识新的汉字朋友', '开始学习', 'yellow')}
+        ${actionCard('review', '复习一下', '和学过的字再见面', '开始复习', 'green')}
+        ${actionCard('known', '我认识的字', `已经认识 ${stats.known} 个字`, '去看看', 'pink')}
+        ${actionCard('progress', '学习进度', `已经完成 ${stats.percent}%`, '看进度', 'blue')}
+      </div>
+    </section>
+    <section class="recent-card"><div><p class="eyebrow">最近学习</p><h2>${recent.length ? '这些字还记得吗？' : '你的汉字旅程等你开始'}</h2></div>
+      <div class="recent-chars">${recent.length ? recent.map(c => `<button data-character="${c.id}" aria-label="查看${c.char}字">${c.char}</button>`).join('') : '<span class="empty-hint">学过的字会出现在这里</span>'}</div>
+    </section>`, { title: '' });
+}
+
+function statCard(label, number, unit, tone) {
+  return `<article class="stat-card ${tone}"><span>${label}</span><strong>${number}</strong><small>${unit}</small></article>`;
+}
+
+function actionCard(route, title, subtitle, label, tone) {
+  return `<button class="action-card ${tone}" data-route="${route}"><span class="action-icon">${icons[route]}</span><span class="action-copy"><strong>${title}</strong><small>${subtitle}</small></span><span class="action-link">${label}<b>→</b></span></button>`;
+}
+
+function startSession(mode) {
+  let queue;
+  if (mode === 'review') {
+    queue = store.getReviewQueue(characters);
+    if (!queue.length) return renderEmptyReview();
+  } else {
+    if (store.isLibraryComplete(characters)) return renderAllComplete();
+    const unseen = characters.filter(c => !store.getRecord(c.id));
+    queue = (unseen.length ? unseen : store.getPracticeQueue(characters)).slice(0, DAILY_GOAL);
+  }
+  session = { mode, queue, index: 0 };
+  renderStudy();
+}
+
+function renderStudy() {
+  const character = session.queue[session.index];
+  const isReview = session.mode === 'review';
+  shell(`<section class="study-layout">
+    <div class="session-meta"><span class="mode-pill">${isReview ? '温故知新' : '今日识字'}</span><span>${session.index + 1} / ${session.queue.length}</span></div>
+    <div class="mini-progress"><i style="width:${((session.index + 1) / session.queue.length) * 100}%"></i></div>
+    <article class="character-card">
+      <p>${isReview ? '还记得这个字吗？' : '请大声读一读'}</p>
+      <div class="learning-visual">
+        <button class="giant-character" data-speak="${character.id}" aria-label="${character.char}，${character.pinyin}">${character.char}</button>
+        ${renderCharacterImage(character.image)}
+      </div>
+      <div class="pinyin">${character.pinyin}</div>
+      <div class="word-chips" aria-label="点击词语听读音">${character.words.map(word => `<button type="button" data-speak="${word}" aria-label="朗读${word}">${word}<span aria-hidden="true">♪</span></button>`).join('')}</div>
+      <small class="speak-hint">轻点汉字 · 听普通话读音</small>
+    </article>
+    <div class="decision-buttons">
+      <button class="decision secondary" data-answer="learning"><span>↻</span><strong>再学学</strong><small>我们再见几次</small></button>
+      <button class="decision primary" data-answer="known"><span>✓</span><strong>认识了</strong><small>真棒，继续前进</small></button>
+    </div>
+  </section>`, { back: true, title: isReview ? '复习一下' : '今日识字' });
+}
+
+function answer(status) {
+  const current = session.queue[session.index];
+  store.mark(current.id, status);
+  if (session.index < session.queue.length - 1) {
+    session.index += 1;
+    renderStudy();
+  } else renderComplete();
+}
+
+function renderComplete() {
+  const stats = store.getStats(characters);
+  shell(`<section class="center-message"><div class="celebrate">★</div><p class="eyebrow">完成啦</p><h1>今天表现得真棒！</h1><p>你已经认识 <strong>${stats.known}</strong> 个汉字朋友了。</p><button class="big-home-button" data-route="home">回到首页</button></section>`, { back: true, title: '学习完成' });
+}
+
+function renderEmptyReview() {
+  shell(`<section class="center-message"><div class="celebrate">☁</div><h1>暂时没有需要复习的字</h1><p>继续认识新朋友吧！</p><button class="big-home-button" data-route="learn">去识字</button></section>`, { back: true, title: '复习一下' });
+}
+
+function renderAllComplete() {
+  const total = characters.length;
+  shell(`<section class="center-message"><div class="celebrate">★</div><p class="eyebrow">第一阶段完成啦！🎉</p><h1>全部汉字都认识了</h1><p>你已经完成当前全部 <strong>${total}</strong> 个汉字学习。</p><button class="big-home-button" data-route="home">回到首页</button></section>`, { back: true, title: '学习完成' });
+}
+
+function renderKnown(focusId) {
+  const known = characters.filter(c => store.getRecord(c.id)?.status === 'known');
+  const focus = focusId ? characters.find(c => c.id === focusId) : null;
+  shell(`<section class="page-intro"><p class="eyebrow">我的汉字收藏</p><h1>我已经认识 <em>${known.length}</em> 个字</h1><p>每一个字，都是你努力的证明。</p></section>
+    ${focus ? detailCard(focus) : ''}
+    <section class="known-grid">${known.length ? known.map(c => `<button data-character="${c.id}" class="hanzi-tile"><strong>${c.char}</strong><small>${c.pinyin}</small></button>`).join('') : '<div class="empty-panel"><span>🌱</span><h2>这里还空空的</h2><p>去认识第一个汉字朋友吧！</p><button data-route="learn">开始识字</button></div>'}</section>`, { back: true, title: '我认识的字' });
+}
+
+function detailCard(c) {
+  return `<article class="detail-card"><button class="detail-close" data-route="known" aria-label="关闭">×</button><strong>${c.char}</strong><div><h2>${c.pinyin}</h2><p>${c.words.join(' · ')}</p></div></article>`;
+}
+
+function renderProgress() {
+  const s = store.getStats(characters);
+  shell(`<section class="page-intro"><p class="eyebrow">一点一点在长大</p><h1>学习进度</h1><p>坚持每天认识几个汉字，慢慢就会读故事啦。</p></section>
+    <section class="progress-overview"><div class="progress-ring" style="--progress:${s.percent * 3.6}deg"><div><strong>${s.percent}%</strong><small>整体进度</small></div></div>
+      <div class="progress-copy"><h2>${s.known ? '又向前走了一步！' : '从第一个字开始吧！'}</h2><p>已认识 ${s.known} 个，共有 ${s.total} 个汉字朋友。</p><div class="wide-progress"><i style="width:${s.percent}%"></i></div></div>
+    </section>
+    <section class="progress-stats">
+      ${progressStat('总字库', s.total, 'book')}${progressStat('已认识', s.known, 'check')}${progressStat('正在学习', s.learning, 'pencil')}${progressStat('未学习', s.unseen, 'seed')}
+    </section>
+    <button class="continue-button" data-route="learn">继续识字 <span>→</span></button>`, { back: true, title: '学习进度' });
+}
+
+function progressStat(label, number, icon) {
+  const symbols = { book: '册', check: '✓', pencil: '✎', seed: '芽' };
+  return `<article class="progress-stat ${icon}"><span>${symbols[icon]}</span><div><small>${label}</small><strong>${number}<i> 字</i></strong></div></article>`;
+}
+
+function navigate(route) {
+  if (route === 'home') renderHome();
+  if (route === 'learn') startSession('learn');
+  if (route === 'review') startSession('review');
+  if (route === 'known') renderKnown();
+  if (route === 'progress') renderProgress();
+}
+
+app.addEventListener('click', event => {
+  const route = event.target.closest('[data-route]')?.dataset.route;
+  const answerValue = event.target.closest('[data-answer]')?.dataset.answer;
+  const characterId = event.target.closest('[data-character]')?.dataset.character;
+  const speakText = event.target.closest('[data-speak]')?.dataset.speak;
+  if (route) navigate(route);
+  else if (answerValue) answer(answerValue);
+  else if (characterId) renderKnown(characterId);
+  else if (speakText) speakMandarin(speakText);
+});
+
+renderHome();
+</script>
+  </body>
+</html>
